@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esplora Milano - Prenota Guida</title>
+    <style> * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background-color: #f4f7f6; color: #333; } header { background-color: #1a365d; color: #fff; padding: 2rem 1rem; text-align: center; } .back-btn { display: inline-block; color: #fff; text-decoration: none; margin-bottom: 1rem; font-size: 0.9rem; border: 1px solid #fff; padding: 0.3rem 0.8rem; border-radius: 4px; } .container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; } .hero-banner { background-color: #ddd; height: 300px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-bottom: 2rem; font-weight: bold; color: #666; } .descrizione { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; } .descrizione h2 { color: #1a365d; margin-bottom: 1rem; } .form-prenotazione { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); } .form-prenotazione h3 { color: #1a365d; margin-bottom: 1.5rem; border-bottom: 2px solid #e28743; padding-bottom: 0.5rem; } .form-group { margin-bottom: 1.2rem; } .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.95rem; } .form-group input { width: 100%; padding: 0.7rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; } .btn-invia { width: 100%; background-color: #e28743; color: white; border: none; padding: 0.8rem; font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: background 0.2s; } .btn-invia:hover { background-color: #c56f2e; } </style>
+</head>
+<body>
+    <header> <a href="index.html" class="back-btn">&larr; Torna alla Home</a> <h1>Milano</h1> <p>Capitale della moda, del design e della cultura moderna</p> </header>
+    <main class="container">
+        <div class="hero-banner">[Inserisci l'immagine di Milano qui]</div>
+        <section class="descrizione">
+            <h2>Arte, Stile e Innovazione</h2>
+            <p>Dal meraviglioso Duomo gotico alla storica Galleria Vittorio Emanuele II, fino a raggiungere il Castello Sforzesco. Prenota una guida per non perdere i capolavori milanesi e il Cenacolo Vinciano.</p>
+        </section>
+        <section class="form-prenotazione">
+            <h3>Richiedi una Guida a Milano</h3>
+            <form id="bookingForm" action="https://formspree.io/f/xvkzwrez" method="POST">
+                <input type="hidden" name="Città" value="Milano">
+                <div class="form-group"><label for="email">La tua Email</label><input type="email" name="Email Cliente" id="email" required placeholder="esempio@email.com"></div>
+                <div class="form-group"><label for="quando">Quando (Data e Ora)</label><input type="datetime-local" name="Data e Ora" id="quando" required></div>
+                <div class="form-group"><label for="dove">Dove (Punto di incontro)</label><input type="text" name="Luogo Incontro" id="dove" required placeholder="Es. Piazza del Duomo, Castello Sforzesco..."></div>
+                <div class="form-group"><label for="partecipanti">Numero di Partecipanti</label><input type="number" name="Numero Partecipanti" id="partecipanti" min="1" max="50" value="1" required></div>
+                <button type="submit" class="btn-invia">Invia Richiesta via Email</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function() {
+            const nuovaPrenotazione = {
+                meta: "Milano",
+                email: document.getElementById('email').value,
+                quando: document.getElementById('quando').value.replace('T', ' '),
+                dove: document.getElementById('dove').value,
+                partecipanti: document.getElementById('partecipanti').value,
+                dataInvio: new Date().toLocaleString('it-IT')
+            };
+            let prenotazioni = JSON.parse(localStorage.getItem('prenotazioniAdmin')) || [];
+            prenotazioni.push(nuovaPrenotazione);
+            localStorage.setItem('prenotazioniAdmin', JSON.stringify(prenotazioni));
+        });
+    </script>
+</body>
+</html>

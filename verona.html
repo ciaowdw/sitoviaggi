@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esplora Verona - Prenota Guida</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background-color: #f4f7f6; color: #333; }
+        header { background-color: #1a365d; color: #fff; padding: 2rem 1rem; text-align: center; }
+        .back-btn { display: inline-block; color: #fff; text-decoration: none; margin-bottom: 1rem; font-size: 0.9rem; border: 1px solid #fff; padding: 0.3rem 0.8rem; border-radius: 4px; }
+        .container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        .hero-banner { background-color: #ddd; height: 300px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-bottom: 2rem; font-weight: bold; color: #666; }
+        .descrizione { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .descrizione h2 { color: #1a365d; margin-bottom: 1rem; }
+        .form-prenotazione { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .form-prenotazione h3 { color: #1a365d; margin-bottom: 1.5rem; border-bottom: 2px solid #e28743; padding-bottom: 0.5rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.95rem; }
+        .form-group input { width: 100%; padding: 0.7rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+        .btn-invia { width: 100%; background-color: #e28743; color: white; border: none; padding: 0.8rem; font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .btn-invia:hover { background-color: #c56f2e; }
+        .messaggio-successo { display: none; background-color: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1.2rem; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="back-btn">&larr; Torna alla Home</a>
+        <h1>Verona</h1>
+        <p>La romantica città dell'amore e della maestosa opera romana</p>
+    </header>
+    <main class="container">
+        <div class="hero-banner">[Inserisci l'immagine di Verona qui]</div>
+        <section class="descrizione">
+            <h2>Tra Romanticismo Shakespeareano e Storia Romana</h2>
+            <p>Visita la maestosa ed imponente Arena di Verona, passeggia nella suggestiva Piazza delle Erbe e affacciati dal celeberrimo balcone della casa di Giulietta. Le nostre guide esperte sapranno svelarti aneddoti unici legati alla dominazione scaligera.</p>
+        </section>
+        <section class="form-prenotazione">
+            <h3>Richiedi una Guida a Verona</h3>
+            <div id="msgSuccesso" class="messaggio-successo">Prenotazione inviata! Controlla la sezione Admin.</div>
+            <form id="bookingForm">
+                <div class="form-group"><label for="email">La tua Email</label><input type="email" id="email" required placeholder="esempio@email.com"></div>
+                <div class="form-group"><label for="quando">Quando (Data e Ora)</label><input type="datetime-local" id="quando" required></div>
+                <div class="form-group"><label for="dove">Dove (Punto di incontro)</label><input type="text" id="dove" required placeholder="Es. Arena di Verona, Balcone di Giulietta..."></div>
+                <button type="submit" class="btn-invia">Invia Richiesta</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nuovaPrenotazione = {
+                meta: "Verona",
+                email: document.getElementById('email').value,
+                quando: document.getElementById('quando').value.replace('T', ' '),
+                dove: document.getElementById('dove').value,
+                dataInvio: new Date().toLocaleString('it-IT')
+            };
+            let prenotazioni = JSON.parse(localStorage.getItem('prenotazioniAdmin')) || [];
+            prenotazioni.push(nuovaPrenotazione);
+            localStorage.setItem('prenotazioniAdmin', JSON.stringify(prenotazioni));
+            document.getElementById('msgSuccesso').style.display = 'block';
+            document.getElementById('bookingForm').reset();
+            setTimeout(() => { document.getElementById('msgSuccesso').style.display = 'none'; }, 4000);
+        });
+    </script>
+</body>
+</html>

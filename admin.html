@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pannello Admin - Prenotazioni Italia</title>
+    <script>
+        if (sessionStorage.getItem("adminLoggato") !== "true") {
+            alert("Accesso negato. Inserisci prima la password dalla homepage.");
+            window.location.href = "index.html";
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background-color: #f4f7f6; color: #333; padding: 2rem; }
+        .header-admin { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 3px solid #1a365d; }
+        .header-admin h1 { color: #1a365d; }
+        .btn-group { display: flex; gap: 1rem; }
+        .btn { padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9rem; cursor: pointer; border: none; }
+        .btn-logout { background-color: #6c757d; color: white; }
+        .btn-svuota { background-color: #d9534f; color: white; }
+        .btn-elimina { background-color: #ffc107; color: #212529; padding: 0.2rem 0.5rem; font-size: 0.8rem; border-radius: 4px; }
+        .tabella-prenotazioni { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .tabella-prenotazioni th, .tabella-prenotazioni td { padding: 1rem; text-align: left; border-bottom: 1px solid #ddd; }
+        .tabella-prenotazioni th { background-color: #1a365d; color: #fff; }
+        .tabella-prenotazioni tr:hover { background-color: #f8f9fa; }
+        .nessuna-prenotazione { text-align: center; padding: 2rem; background: #fff; color: #888; border-radius: 8px; font-style: italic; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <div class="header-admin">
+        <h1>Pannello Admin - Registro Locale Browser</h1>
+        <div class="btn-group">
+            <button class="btn btn-svuota" onclick="svuotaPrenotazioni()">Svuota Tutto</button>
+            <button class="btn btn-logout" onclick="logoutAdmin()">Esci</button>
+        </div>
+    </div>
+
+    <main id="tabellaContainer"></main>
+
+    <script>
+        function mostraPrenotazioni() {
+            const prenotazioni = JSON.parse(localStorage.getItem('prenotazioniAdmin')) || [];
+            const container = document.getElementById('tabellaContainer');
+            
+            if (prenotazioni.length === 0) {
+                container.innerHTML = '<p class="nessuna-prenotazione">Nessuna richiesta memorizzata localmente in questa sessione browser.</p>';
+                return;
+            }
+            
+            let html = `
+                <table class="tabella-prenotazioni">
+                    <thead>
+                        <tr>
+                            <th>Città</th>
+                            <th>Email Cliente</th>
+                            <th>Data e Ora</th>
+                            <th>Punto di Incontro</th>
+                            <th>Partecipanti</th>
+                            <th>Ricevuta il</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            prenotazioni.forEach((p, index) => {
+                html += `
+                    <tr>
+                        <td><strong>${p.meta}</strong></td>
+                        <td><a href="mailto:${p.email}">${p.email}</a></td>
+                        <td>${p.quando}</td>
+                        <td>${p.dove}</td>
+                        <td>${p.partecipanti || 1}</td>
+                        <td><small>${p.dataInvio}</small></td>
+                        <td><button class="btn btn-elimina" onclick="eliminaSingola(${index})">Elimina</button></td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function eliminaSingola(index) {
+            let prenotazioni = JSON.parse(localStorage.getItem('prenotazioniAdmin')) || [];
+            prenotazioni.splice(index, 1);
+            localStorage.setItem('prenotazioniAdmin', JSON.stringify(prenotazioni));
+            mostraPrenotazioni();
+        }
+
+        function svuotaPrenotazioni() {
+            if(confirm("Vuoi cancellare interamente l'elenco locale?")) {
+                localStorage.removeItem('prenotazioniAdmin');
+                mostraPrenotazioni();
+            }
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem("adminLoggato");
+            window.location.href = "index.html";
+        }
+
+        document.addEventListener('DOMContentLoaded', mostraPrenotazioni);
+    </script>
+</body>
+</html>
